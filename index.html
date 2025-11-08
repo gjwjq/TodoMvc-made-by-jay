@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TodoMVC</title>
+    <link rel="stylesheet" href="./css/todo.css">
+
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>todos</h2>
+      <div class="stack-wrapper">
+        <ul>
+          <section class="inputWrap">
+            <p class="checkAllBtn">↓</p>
+            <input
+              type="text"
+              placeholder="What needs to be done?"
+              class="todolist-input"
+            />
+            <button class="delAll">🗑️</button>
+          </section>
+        </ul>
+        <div class="option">
+            <p class="remain"></p>
+          <div class="pWrap">
+            <a href="#/">All</a>
+            <a href="#/active">Active</a>
+            <a href="#/completed">Completed</a>
+          </div>
+          <p class="clear-completed">clear completed</p>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./js/todo.js"></script>
+
+</html>

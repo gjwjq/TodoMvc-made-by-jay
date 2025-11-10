@@ -221,6 +221,7 @@ clearCompleted.addEventListener("click", () => {
     e.parentElement.remove();
   });
   clearShown();
+  optionShown()
 });
 
 function clearShown() {
@@ -288,3 +289,4 @@ window.addEventListener("hashchange", (e) => {
 window.addEventListener("DOMContentLoaded", () => {
   aStyle();
 });
+

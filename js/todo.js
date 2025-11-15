@@ -17,7 +17,6 @@ const clearCompleted = document.querySelector(".clear-completed");
 //})
 input.addEventListener("blur", () => {
   todolist();
-  changeRemainText();
 });
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
@@ -35,18 +34,6 @@ ps.forEach((e) => {
     const todoItems = document.querySelectorAll("ul > div");
   });
 });
-function optionShown() {
-  const todoItems = document.querySelectorAll("ul>div");
-  if (todoItems.length > 0) {
-    option.style.display = "flex";
-    cab.style.display = "flex";
-    delAll.style.display = "flex";
-  } else {
-    option.style.display = "none";
-    cab.style.display = "none";
-    delAll.style.display = "none";
-  }
-}
 
 //todolist 함수 시작
 
@@ -60,7 +47,7 @@ function todolist() {
   const li = document.createElement("li");
   const del = document.createElement("p");
   const check = document.createElement("p");
-  let isCheck = false;
+  // let isCheck = false; class 추가방식으로 바꿔서 필요없음ㅁ
   //let isShown = true
 
   li.textContent = input.value;
@@ -78,11 +65,6 @@ function todolist() {
   todoWrap.appendChild(del);
   ul.appendChild(todoWrap);
 
-  optionShown();
-  hrefCheck();
-  cabOpacity();
-  changeRemainText();
-  clearShown();
   input.value = "";
 
   console.log(li);
@@ -90,10 +72,7 @@ function todolist() {
   del.addEventListener("click", () => {
     todoWrap.remove();
     // ul.removeChild(todoWrap)
-    optionShown();
-    changeRemainText();
-    cabOpacity();
-    clearShown();
+    allFunctions();
   });
 
   // checks.forEach((e) => {
@@ -107,19 +86,11 @@ function todolist() {
   // });
 
   check.addEventListener("click", (e) => {
-    isCheck = !isCheck;
+    const isChecked = li.classList.toggle("checked");
 
-    check.textContent = isCheck ? "▣" : "□";
+    check.textContent = isChecked ? "▣" : "□";
 
-    if (isCheck === true) {
-      li.classList.add("checked");
-    } else {
-      li.classList.remove("checked");
-    }
-    hrefCheck();
-    cabOpacity();
-    changeRemainText();
-    clearShown();
+    allFunctions();
   });
 
   // cab.addEventListener("click", () => {
@@ -162,14 +133,12 @@ function todolist() {
     function editFunction() {
       if (!edit.value.trim()) {
         todoWrap.remove();
-        optionShown();
+        allFunctions()
       } else {
         li.textContent = edit.value;
       }
     }
-    changeRemainText();
-    cabOpacity();
-    clearShown();
+
     edit.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         editFunction();
@@ -179,6 +148,7 @@ function todolist() {
       editFunction();
     });
   });
+ allFunctions()
 }
 
 //todolist 함수 끝
@@ -188,30 +158,31 @@ delAll.addEventListener("click", () => {
   todoItems.forEach((e) => {
     e.remove();
   });
-  optionShown();
-  hrefCheck();
-  clearShown();
+  allFunctions();
 });
 
 cab.addEventListener("click", () => {
   const todoWrap = document.querySelectorAll("ul > div");
   const checkedLi = document.querySelectorAll("ul > div > li.checked");
+  const completed = todoWrap.length !== checkedLi.length
 
   todoWrap.forEach((e) => {
     const li = e.querySelector("li");
     const check = e.querySelector(".check");
-    if (todoWrap.length === checkedLi.length) {
-      li.classList.remove("checked");
-      check.textContent = "□"; //▣
-    } else {
-      li.classList.add("checked");
-      check.textContent = "▣"; //▣
-    }
+
+    li.classList.toggle('checked', completed) // todowrap과 checkedli의 길이가 같지 않으면? checked class 추가 / 같으면 checked class 삭제
+    check.textContent =  completed ? '▣' : '□'
+    
+    //toggle 안쓴버전
+    // if (todoWrap.length === checkedLi.length) {
+    //   li.classList.remove("checked");
+    //   check.textContent = "□"; //▣
+    // } else {
+    //   li.classList.add("checked");
+    //   check.textContent = "▣"; //▣
+    // }
   });
-  hrefCheck();
-  cabOpacity();
-  clearShown();
-  changeRemainText();
+  allFunctions();
 });
 
 clearCompleted.addEventListener("click", () => {
@@ -220,56 +191,80 @@ clearCompleted.addEventListener("click", () => {
   checkedLi.forEach((e) => {
     e.parentElement.remove();
   });
-  clearShown();
-  optionShown()
+  allFunctions();
 });
 
-function clearShown() {
-  const checkedLi = document.querySelectorAll("ul > div > li.checked");
-  clearCompleted.style.display = checkedLi.length > 0 ? "flex" : "none";
-}
+ function clearShown() {
+    const checkedLi = document.querySelectorAll("ul > div > li.checked");
 
-function changeRemainText() {
-  // (예시) hello클래스가 없는 div 찾으려면 div:not(.hello)
-  const activeLi = document.querySelectorAll(`ul > div > li:not(.checked)`);
-  const count = activeLi.length;
-  const itemText = count === 1 ? "item" : "items";
+    const isHidden = checkedLi.length === 0
 
-  remain.textContent = `${count} ${itemText} left`;
-}
-function cabOpacity() {
-  const todoWrap = document.querySelectorAll("ul > div");
-  const checkedLi = document.querySelectorAll("ul > div > li.checked");
-  if (todoWrap.length === checkedLi.length) {
-    cab.style.opacity = "1";
-  } else {
-    cab.style.opacity = "0.4";
+    clearCompleted.classList.toggle('hidden', isHidden)
+
+    // clearCompleted.style.display = checkedLi.length > 0 ? "flex" : "none";
   }
-}
-function hrefCheck() {
-  const todoItems = [...document.querySelectorAll("ul > div")];
-  const hashNow = location.hash;
 
-  todoItems.forEach((e) => {
-    const checkConfirm = e.querySelector("li").classList.contains("checked");
+  function changeRemainText() {
+    // (예시) hello클래스가 없는 div 찾으려면 div:not(.hello)
+    const activeLi = document.querySelectorAll(`ul > div > li:not(.checked)`);
+    const count = activeLi.length;
+    const itemText = count === 1 ? "item" : "items";
 
-    if (hashNow === "#/active") {
-      if (checkConfirm) {
-        e.style.display = "none";
-      } else {
-        e.style.display = "flex";
-      }
-    } else if (hashNow === "#/completed") {
-      if (checkConfirm) {
-        e.style.display = "flex";
-      } else {
-        e.style.display = "none";
-      }
+    remain.textContent = `${count} ${itemText} left`;
+  }
+  function cabOpacity() {
+    const todoWrap = document.querySelectorAll("ul > div");
+    const checkedLi = document.querySelectorAll("ul > div > li.checked");
+    if (todoWrap.length === checkedLi.length) {
+      cab.style.opacity = "1";
     } else {
-      e.style.display = "flex";
+      cab.style.opacity = "0.4";
     }
-  });
+  }
+  function optionShown() {
+    const todoItems = document.querySelectorAll("ul>div");
+    if (todoItems.length > 0) {
+      option.classList.remove("hidden");
+      cab.classList.remove("hidden");
+      delAll.classList.remove("hidden");
+    } else {
+      option.classList.add("hidden");
+      cab.classList.add("hidden");
+      delAll.classList.add("hidden");
+    }
+  }
+  function hrefCheck() {
+    const todoItems = [...document.querySelectorAll("ul > div")];
+    const hashNow = location.hash;
+
+    todoItems.forEach((e) => {
+      const checkConfirm = e.querySelector("li").classList.contains("checked");
+
+      if (hashNow === "#/active") {
+        if (checkConfirm) {
+          e.classList.add("hidden");
+        } else {
+          e.classList.remove("hidden");
+        }
+      } else if (hashNow === "#/completed") {
+        if (checkConfirm) {
+          e.classList.remove("hidden");
+        } else {
+          e.classList.add('hidden')
+        }
+      } else {
+        e.classList.remove('hidden')
+      }
+    });
+  }
+function allFunctions() {
+  clearShown();
+  changeRemainText();
+  cabOpacity();
+  optionShown();
+  hrefCheck();
 }
+
 function aStyle() {
   const hashNow = location.hash || "#/";
 
@@ -289,4 +284,3 @@ window.addEventListener("hashchange", (e) => {
 window.addEventListener("DOMContentLoaded", () => {
   aStyle();
 });
-

@@ -100,7 +100,6 @@ ul > div > li.checked {
   box-shadow: 0 0 3px rgb(202, 202, 202);
   padding: 10px 20px;
   justify-content: space-around;
-  display: none;
   align-items: center;
 }
 
@@ -150,7 +149,6 @@ h2 {
   cursor: pointer;
   opacity: 0.4;
   user-select: none;
-  display: none;
 }
 
 .todolist-input {
@@ -177,7 +175,6 @@ h2 {
   border: none;
   background-color: transparent;
   cursor: pointer;
-  display: none;
 }
 .container > h2 {
   font-size: 80px;
@@ -192,4 +189,8 @@ h2 {
   padding: 10px 20px;
   border: none;
   box-shadow: 0 0 50px #ccc;
+}
+
+.hidden {
+  display: none !important;
 }
